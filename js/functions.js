@@ -1,5 +1,5 @@
 // ==================== GLOBAL SETTINGS ====================
-var DEV_MODE = true; // set true to skip bloom animation
+var DEV_MODE = false; // set true to skip bloom animation
 var $window = $(window), gardenCtx, gardenCanvas, $garden, garden;
 var clientWidth = $(window).width();
 var clientHeight = $(window).height();
@@ -23,7 +23,15 @@ $(function () {
     $("#content").css("margin-top", Math.max(($window.height() - $("#content").height()) / 2, 10));
     $("#content").css("margin-left", Math.max(($window.width() - $("#content").width()) / 2, 10));
 
-    // ==================== HEART BLOOM AND STARS ====================
+    // ==================== INITIAL STARS (behind heart) ====================
+    var starCount = 60; // number of twinkling stars
+    for (var i = 0; i < starCount; i++) {
+        var x = Math.random() * $loveHeart.width();
+        var y = Math.random() * $loveHeart.height();
+        garden.createStar(x, y);
+    }
+
+    // Start animation
     if (DEV_MODE) {
         for (var angle = 10; angle <= 30; angle += 0.2) {
             var point = getHeartPoint(angle, offsetX, offsetY);
@@ -32,7 +40,11 @@ $(function () {
         }
         showMessages();
     } else {
-        startHeartAnimation(offsetX, offsetY); // gradual bloom animation
+        // Delay heart animation so typewriter text starts first
+        var heartDelay = 2500; // 2.5 seconds
+        setTimeout(function() {
+            startHeartAnimation(offsetX, offsetY); // gradual bloom animation
+        }, heartDelay);
     }
 
     // render loop for blooms and stars
@@ -60,7 +72,7 @@ function getHeartPoint(angle, offsetX, offsetY) {
 
 // ==================== HEART BLOOM ANIMATION ====================
 function startHeartAnimation(offsetX, offsetY) {
-    var interval = 100;
+    var interval = 100; // slowed down for smooth bloom
     var angle = 10;
     var heart = [];
     var animationTimer = setInterval(function () {
@@ -84,7 +96,7 @@ function startHeartAnimation(offsetX, offsetY) {
             clearInterval(animationTimer);
             showMessages();
         } else {
-            angle += 0.15;
+            angle += 0.15; // slow bloom
         }
     }, interval);
 }
