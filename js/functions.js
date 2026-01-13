@@ -56,11 +56,22 @@ function startHeartAnimation() {
 				draw = false;
 				break;
 			}
-		}
-		if (draw) {
-			heart.push(bloom);
-			garden.createRandomBloom(bloom[0], bloom[1]);
-		}
+Garden.prototype.createRandomBloom = function(x, y) {
+	var ctx = this.ctx;
+
+	// Each star is an object with position, size, alpha, and alpha direction
+	var star = {
+		x: x,
+		y: y,
+		size: 4 + Math.random() * 4,
+		alpha: 0,           // start invisible
+		alphaDir: 0.02 + Math.random() * 0.02 // rate of change for twinkle
+	};
+
+	// Add it to the garden's stars array
+	if (!this.stars) this.stars = [];
+	this.stars.push(star);
+};
 		if (angle >= 30) {
 			clearInterval(animationTimer);
 			showMessages();
@@ -102,6 +113,9 @@ function timeElapse(date) {
 	var hours = Math.floor(seconds / 3600);
 	if (hours < 10) {
 		hours = "0" + hours;
+	}
+
+	"var DEV_MODE = true;"
 	}
 
 	seconds = seconds % 3600;
