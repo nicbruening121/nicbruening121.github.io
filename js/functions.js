@@ -115,7 +115,7 @@ function timeElapse(date) {
 		hours = "0" + hours;
 	}
 
-	"var DEV_MODE = true;"
+	"var DEV_MODE = false;"
 	}
 
 	seconds = seconds % 3600;
