@@ -1,5 +1,5 @@
 // ==================== GLOBAL SETTINGS ====================
-var DEV_MODE = true; // set true to skip animation
+var DEV_MODE = false; // set true to skip bloom animation
 var $window = $(window), gardenCtx, gardenCanvas, $garden, garden;
 var clientWidth = $(window).width();
 var clientHeight = $(window).height();
@@ -24,20 +24,22 @@ $(function () {
     $("#content").css("margin-top", Math.max(($window.height() - $("#content").height()) / 2, 10));
     $("#content").css("margin-left", Math.max(($window.width() - $("#content").width()) / 2, 10));
 
-    // Start animation immediately if not DEV_MODE, otherwise fast forward
+    // Start animation
     if (DEV_MODE) {
+        // Fast-forward: fill heart instantly
         for (var angle = 10; angle <= 30; angle += 0.2) {
             var bloom = getHeartPoint(angle, offsetX, offsetY);
-            garden.createRandomBloom(bloom[0], bloom[1]);
+            garden.createBloom(bloom[0], bloom[1]); // uses flower bloom
         }
         showMessages();
     } else {
-        startHeartAnimation(offsetX, offsetY);
+        startHeartAnimation(offsetX, offsetY); // gradually blooms heart
     }
 
-    // render loop for stars/flowers
+    // render loop for blooms and stars
     setInterval(function () {
         garden.render();
+        garden.renderStars(); // update twinkling stars
     }, Garden.options.growSpeed);
 });
 
@@ -57,7 +59,7 @@ function getHeartPoint(angle, offsetX, offsetY) {
     return [offsetX + x, offsetY + y];
 }
 
-// ==================== ANIMATION ====================
+// ==================== HEART BLOOM ANIMATION ====================
 function startHeartAnimation(offsetX, offsetY) {
     var interval = 50;
     var angle = 10;
@@ -75,7 +77,7 @@ function startHeartAnimation(offsetX, offsetY) {
         }
         if (draw) {
             heart.push(bloom);
-            garden.createRandomBloom(bloom[0], bloom[1]);
+            garden.createBloom(bloom[0], bloom[1]); // flower bloom
         }
 
         if (angle >= 30) {
@@ -88,18 +90,33 @@ function startHeartAnimation(offsetX, offsetY) {
 }
 
 // ==================== STAR BLOOM (fade/twinkle) ====================
-Garden.prototype.createRandomBloom = function (x, y) {
+Garden.prototype.createStar = function (x, y) {
     if (!this.stars) this.stars = [];
 
     var star = {
         x: x,
         y: y,
-        size: 4 + Math.random() * 4,
+        size: 2 + Math.random() * 3,
         alpha: 0,
-        alphaDir: 0.02 + Math.random() * 0.02
+        alphaDir: 0.01 + Math.random() * 0.02
     };
-
     this.stars.push(star);
+};
+
+Garden.prototype.renderStars = function () {
+    if (!this.stars) return;
+    var ctx = this.ctx;
+    for (var i = 0; i < this.stars.length; i++) {
+        var s = this.stars[i];
+        ctx.fillStyle = "rgba(255,255,255," + s.alpha + ")";
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.size, 0, 2 * Math.PI);
+        ctx.fill();
+
+        s.alpha += s.alphaDir;
+        if (s.alpha > 1) s.alphaDir = -s.alphaDir;
+        if (s.alpha < 0) s.alphaDir = -s.alphaDir;
+    }
 };
 
 // ==================== TYPEWRITER EFFECT ====================
@@ -110,11 +127,8 @@ Garden.prototype.createRandomBloom = function (x, y) {
             $ele.html('');
             var timer = setInterval(function () {
                 var current = str.substr(progress, 1);
-                if (current == '<') {
-                    progress = str.indexOf('>', progress) + 1;
-                } else {
-                    progress++;
-                }
+                if (current == '<') progress = str.indexOf('>', progress) + 1;
+                else progress++;
                 $ele.html(str.substring(0, progress) + (progress & 1 ? '_' : ''));
                 if (progress >= str.length) clearInterval(timer);
             }, 75);
