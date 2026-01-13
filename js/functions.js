@@ -159,7 +159,7 @@ function timeElapse(date) {
         "<span class=\"digit\">" + days + "</span> days with you " +
         "<span class=\"digit\">" + hours + "</span> hours " +
         "<span class=\"digit\">" + minutes + "</span> minutes " +
-        "<span class=\"digit\">" + seconds + "</span> seconds ❤️";
+        "<span class=\"digit\">" + seconds + "</span> seconds";
 
     $("#elapseClock").html(result);
 }
