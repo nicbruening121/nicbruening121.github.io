@@ -156,6 +156,3 @@ function adjustCodePosition() {
 function showLoveU() {
 	$('#loveu').fadeIn(3000);
 }
-
-	"var DEV_MODE = false;"
-}
