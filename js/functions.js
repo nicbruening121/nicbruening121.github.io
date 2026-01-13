@@ -6,7 +6,6 @@ var clientHeight = $(window).height();
 
 // ==================== GARDEN SETUP ====================
 $(function () {
-    // setup garden
     $loveHeart = $("#loveHeart");
     var offsetX = $loveHeart.width() / 2;
     var offsetY = $loveHeart.height() / 2 - 55;
@@ -24,30 +23,22 @@ $(function () {
     $("#content").css("margin-top", Math.max(($window.height() - $("#content").height()) / 2, 10));
     $("#content").css("margin-left", Math.max(($window.width() - $("#content").width()) / 2, 10));
 
-    // ==================== INITIAL STARS ====================
-    var starCount = 60; // number of twinkling stars
-    for (var i = 0; i < starCount; i++) {
-        var x = Math.random() * $loveHeart.width();
-        var y = Math.random() * $loveHeart.height();
-        garden.createStar(x, y);
-    }
-
-    // Start animation
+    // ==================== HEART BLOOM AND STARS ====================
     if (DEV_MODE) {
-        // Fast-forward: fill heart instantly
         for (var angle = 10; angle <= 30; angle += 0.2) {
-            var bloom = getHeartPoint(angle, offsetX, offsetY);
-            garden.createBloom(bloom[0], bloom[1]); // flower bloom
+            var point = getHeartPoint(angle, offsetX, offsetY);
+            garden.createBloom(point[0], point[1]); // flower bloom
+            garden.createStar(point[0], point[1]);  // twinkling star
         }
         showMessages();
     } else {
-        startHeartAnimation(offsetX, offsetY); // gradually blooms heart
+        startHeartAnimation(offsetX, offsetY); // gradual bloom animation
     }
 
     // render loop for blooms and stars
     setInterval(function () {
-        garden.render();
-        garden.renderStars(); // update twinkling stars
+        garden.render();      // draws blooms
+        garden.renderStars(); // draws twinkling stars
     }, Garden.options.growSpeed);
 });
 
@@ -86,6 +77,7 @@ function startHeartAnimation(offsetX, offsetY) {
         if (draw) {
             heart.push(bloom);
             garden.createBloom(bloom[0], bloom[1]); // flower bloom
+            garden.createStar(bloom[0], bloom[1]);  // twinkling star
         }
 
         if (angle >= 30) {
@@ -100,7 +92,6 @@ function startHeartAnimation(offsetX, offsetY) {
 // ==================== STAR BLOOM (fade/twinkle) ====================
 Garden.prototype.createStar = function (x, y) {
     if (!this.stars) this.stars = [];
-
     var star = {
         x: x,
         y: y,
@@ -147,7 +138,6 @@ Garden.prototype.renderStars = function () {
 
 // ==================== ANNIVERSARY TIMER ====================
 function timeElapse() {
-    // Start date: Jan 13, 2025 at 5:00 PM
     var startDate = new Date(2025, 0, 13, 17, 0, 0);
     var now = new Date();
     var seconds = (now - startDate) / 1000;
@@ -174,7 +164,6 @@ function timeElapse() {
     $("#elapseClock").html(result);
 }
 
-// Update the timer every second
 setInterval(timeElapse, 1000);
 
 // ==================== MESSAGES ====================
@@ -187,7 +176,7 @@ function showMessages() {
 
 function adjustWordsPosition() {
     $('#words').css("position", "absolute");
-    $('#words').css("top", $("#garden").position().top + 175); // moved up slightly
+    $('#words').css("top", $("#garden").position().top + 175); 
     $('#words').css("left", $("#garden").position().left + 70);
 }
 
