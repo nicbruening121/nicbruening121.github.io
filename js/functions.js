@@ -115,9 +115,6 @@ function timeElapse(date) {
 		hours = "0" + hours;
 	}
 
-	"var DEV_MODE = false;"
-	}
-
 	seconds = seconds % 3600;
 
 	var minutes = Math.floor(seconds / 60);
@@ -158,4 +155,7 @@ function adjustCodePosition() {
 
 function showLoveU() {
 	$('#loveu').fadeIn(3000);
+}
+
+	"var DEV_MODE = true;"
 }
