@@ -29,7 +29,7 @@ $(function () {
         // Fast-forward: fill heart instantly
         for (var angle = 10; angle <= 30; angle += 0.2) {
             var bloom = getHeartPoint(angle, offsetX, offsetY);
-            garden.createBloom(bloom[0], bloom[1]); // uses flower bloom
+            garden.createBloom(bloom[0], bloom[1]); // flower bloom
         }
         showMessages();
     } else {
@@ -138,9 +138,11 @@ Garden.prototype.renderStars = function () {
 })(jQuery);
 
 // ==================== ANNIVERSARY TIMER ====================
-function timeElapse(date) {
-    var current = Date();
-    var seconds = (Date.parse(current) - Date.parse(date)) / 1000;
+function timeElapse() {
+    // Start date: Jan 13, 2025 at 5:00 PM
+    var startDate = new Date(2025, 0, 13, 17, 0, 0); 
+    var now = new Date();
+    var seconds = (now - startDate) / 1000;
 
     var days = Math.floor(seconds / (3600 * 24));
     seconds = seconds % (3600 * 24);
@@ -152,7 +154,7 @@ function timeElapse(date) {
     var minutes = Math.floor(seconds / 60);
     if (minutes < 10) minutes = "0" + minutes;
 
-    seconds = seconds % 60;
+    seconds = Math.floor(seconds % 60);
     if (seconds < 10) seconds = "0" + seconds;
 
     var result =
@@ -164,6 +166,9 @@ function timeElapse(date) {
     $("#elapseClock").html(result);
 }
 
+// Update the timer every second
+setInterval(timeElapse, 1000);
+
 // ==================== MESSAGES ====================
 function showMessages() {
     adjustWordsPosition();
@@ -174,7 +179,7 @@ function showMessages() {
 
 function adjustWordsPosition() {
     $('#words').css("position", "absolute");
-    $('#words').css("top", $("#garden").position().top + 195);
+    $('#words').css("top", $("#garden").position().top + 175); // moved up slightly
     $('#words').css("left", $("#garden").position().left + 70);
 }
 
